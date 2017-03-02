@@ -54,8 +54,14 @@
 #![cfg_attr(all(windows, target_arch = "x86", target_env = "msvc"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/i686-pc-windows-msvc"
 ))]
-#![cfg_attr(target_os = "android", doc(
+#![cfg_attr(all(target_os = "android", target_arch = "arm"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/arm-linux-androideabi"
+))]
+#![cfg_attr(all(target_os = "android", target_arch = "aarch64"), doc(
+    html_root_url = "https://doc.rust-lang.org/libc/aarch64-linux-android"
+))]
+#![cfg_attr(all(target_os = "android", target_arch = "i686"), doc(
+    html_root_url = "https://doc.rust-lang.org/libc/i686-linux-android"
 ))]
 #![cfg_attr(target_os = "freebsd", doc(
     html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-freebsd"

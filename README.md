@@ -123,6 +123,8 @@ Tested:
   * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc/)
   * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc/)
     (Android)
+  * [`aarch64-linux-android`](https://doc.rust-lang.org/libc/aarch64-linux-android/libc/)
+  * [`i686-linux-android`](https://doc.rust-lang.org/libc/i686-linux-android/libc/)
   * [`x86_64-unknown-freebsd`](https://doc.rust-lang.org/libc/x86_64-unknown-freebsd/libc/)
   * [`x86_64-unknown-openbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-openbsd/libc/)
   * [`x86_64-rumprun-netbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-netbsd/libc/)
