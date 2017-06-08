@@ -168,6 +168,10 @@ case "$TARGET" in
     qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
 
+  *-emscripten)
+    cd $CARGO_TARGET_DIR/$TARGET/debug/deps/ && node ../libc-test.js
+  ;;
+
   s390x-unknown-linux-gnu)
     # TODO: in theory we should execute this, but qemu segfaults immediately :(
     # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
