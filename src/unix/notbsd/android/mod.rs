@@ -171,6 +171,8 @@ s! {
 }
 
 pub const O_TRUNC: ::c_int = 512;
+pub const O_TMPFILE: ::c_int = 0o20000000 | ::O_DIRECTORY;
+
 pub const O_CLOEXEC: ::c_int = 0x80000;
 
 pub const EBFONT: ::c_int = 59;
