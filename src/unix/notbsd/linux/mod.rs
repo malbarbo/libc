@@ -101,9 +101,9 @@ s! {
     }
 
     pub struct pthread_rwlockattr_t {
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         __align: [::c_int; 0],
-        #[cfg(not(any(target_env = "musl")))]
+        #[cfg(not(any(target_env = "musl", target_os = "emscripten")))]
         __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
     }
