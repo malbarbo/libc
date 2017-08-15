@@ -217,6 +217,18 @@ pub const PRIO_USER: ::c_int = 2;
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
 
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
+pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
+pub const IPPROTO_IP: ::c_int = 0;
+pub const IPPROTO_IPV6: ::c_int = 41;
+
+pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
+pub const INADDR_ANY: in_addr_t = 0;
+pub const INADDR_BROADCAST: in_addr_t = 4294967295;
+pub const INADDR_NONE: in_addr_t = 4294967295;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
@@ -252,6 +264,10 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "mxio")]
         extern {}
+    } else if #[cfg(target_env = "newlib")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -264,12 +280,37 @@ cfg_if! {
 extern {
     pub fn getgrnam(name: *const ::c_char) -> *mut group;
     pub fn getgrgid(gid: ::gid_t) -> *mut group;
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
+    pub fn getgrnam_r(name: *const ::c_char,
+                      grp: *mut group,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut group) -> ::c_int;
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
+    pub fn getgrgid_r(uid: ::uid_t,
+                      grp: *mut group,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut group) -> ::c_int;
 
-    pub fn endpwent();
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam50")]
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid50")]
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
+    #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwnam_r")]
+    pub fn getpwnam_r(name: *const ::c_char,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwuid_r")]
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
 
     pub fn fprintf(stream: *mut ::FILE,
                    format: *const ::c_char, ...) -> ::c_int;
@@ -438,6 +479,9 @@ extern {
                   -> ::c_int;
     pub fn execvp(c: *const c_char,
                   argv: *const *const c_char) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *const c_char,
+                   envp: *const *const c_char)
+                   -> ::c_int;
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
@@ -648,6 +692,10 @@ extern {
     pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
     pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_init$UNIX2003")]
+    pub fn pthread_rwlock_init(lock: *mut pthread_rwlock_t,
+                               attr: *const pthread_rwlockattr_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_destroy$UNIX2003")]
     pub fn pthread_rwlock_destroy(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -665,6 +713,9 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_unlock$UNIX2003")]
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
+    pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
+                                      -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
@@ -856,6 +907,7 @@ extern {
                      termios: *const ::termios) -> ::c_int;
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
+    pub fn tcgetsid(fd: ::c_int) -> ::pid_t;
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
@@ -880,6 +932,9 @@ cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
+    } else if #[cfg(target_env = "newlib")] {
+        mod newlib;
+        pub use self::newlib::*;
     } else if #[cfg(any(target_os = "linux",
                         target_os = "android",
                         target_os = "emscripten",

@@ -257,6 +257,11 @@ s! {
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
+    pub struct pthread_rwlockattr_t {
+        __lockkind: ::c_int,
+        __pshared: ::c_int,
+    }
+
     pub struct pthread_cond_t {
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_COND_T],
@@ -720,17 +725,15 @@ pub const MSG_WAITFORONE: ::c_int = 0x10000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TTL: ::c_int = 2;
 pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+
+pub const IPV6_JOIN_GROUP: ::c_int = 20;
+pub const IPV6_LEAVE_GROUP: ::c_int = 21;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -1419,16 +1422,6 @@ f! {
 }
 
 extern {
-    pub fn getpwnam_r(name: *const ::c_char,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
@@ -1577,6 +1570,14 @@ extern {
                                         pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getkind_np(attr: *const pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setkind_np(attr: *mut pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
     pub fn ptsname_r(fd: ::c_int,
                      buf: *mut ::c_char,
                      buflen: ::size_t) -> ::c_int;
@@ -1587,6 +1588,7 @@ extern {
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
     pub fn setpwent();
+    pub fn endpwent();
     pub fn getpwent() -> *mut passwd;
     pub fn setspent();
     pub fn endspent();
@@ -1766,4 +1768,3 @@ cfg_if! {
         pub use unsupported_target;
     }
 }
-

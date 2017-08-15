@@ -131,10 +131,47 @@ s! {
         pub st_qspare1: ::int64_t,
         pub st_qspare2: ::int64_t,
     }
+
+    pub struct if_data {
+        pub ifi_type: ::c_uchar,
+        pub ifi_physical: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_recvquota: ::c_uchar,
+        pub ifi_xmitquota: ::c_uchar,
+        pub ifi_mtu: ::c_ulong,
+        pub ifi_metric: ::c_ulong,
+        pub ifi_link_state: ::c_ulong,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: ::c_ulong,
+        pub ifi_ierrors: ::c_ulong,
+        pub ifi_opackets: ::c_ulong,
+        pub ifi_oerrors: ::c_ulong,
+        pub ifi_collisions: ::c_ulong,
+        pub ifi_ibytes: ::c_ulong,
+        pub ifi_obytes: ::c_ulong,
+        pub ifi_imcasts: ::c_ulong,
+        pub ifi_omcasts: ::c_ulong,
+        pub ifi_iqdrops: ::c_ulong,
+        pub ifi_noproto: ::c_ulong,
+        pub ifi_hwassist: ::c_ulong,
+        pub ifi_oqdrops: ::c_ulong,
+        pub ifi_lastchange: ::timeval,
+    }
+
+    pub struct if_msghdr {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_index: ::c_ushort,
+        pub ifm_data: if_data,
+    }
 }
 
 pub const RAND_MAX: ::c_int = 0x7fff_ffff;
-pub const PTHREAD_STACK_MIN: ::size_t = 1024;
+pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 pub const SIGSTKSZ: ::size_t = 40960;
 pub const MADV_INVAL: ::c_int = 10;
 pub const O_CLOEXEC: ::c_int = 0x00020000;
@@ -303,6 +340,7 @@ pub const EVFILT_VNODE: ::int16_t = -4;
 pub const EVFILT_PROC: ::int16_t = -5;
 pub const EVFILT_SIGNAL: ::int16_t = -6;
 pub const EVFILT_TIMER: ::int16_t = -7;
+pub const EVFILT_EXCEPT: ::int16_t = -8;
 pub const EVFILT_USER: ::int16_t = -9;
 pub const EVFILT_FS: ::int16_t = -10;
 
@@ -411,6 +449,18 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 1;
 pub const AT_REMOVEDIR:        ::c_int = 2;
 pub const AT_EACCESS:          ::c_int = 4;
 pub const AT_SYMLINK_FOLLOW:   ::c_int = 8;
+
+pub const VCHECKPT: usize = 19;
+
+pub const _PC_2_SYMLINKS: ::c_int = 22;
+pub const _PC_TIMESTAMP_RESOLUTION: ::c_int = 23;
+
+pub const _SC_V7_ILP32_OFF32: ::c_int = 122;
+pub const _SC_V7_ILP32_OFFBIG: ::c_int = 123;
+pub const _SC_V7_LP64_OFF64: ::c_int = 124;
+pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 125;
+pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 126;
+pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)

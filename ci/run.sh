@@ -172,6 +172,11 @@ case "$TARGET" in
     cd $CARGO_TARGET_DIR/$TARGET/debug/deps/ && node ../libc-test.js
   ;;
 
+  s390x-unknown-linux-gnu)
+    # TODO: in theory we should execute this, but qemu segfaults immediately :(
+    # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ;;
+
   *-rumprun-netbsd)
     rumprun-bake hw_virtio /tmp/libc-test.img $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     qemu-system-x86_64 -nographic -vga none -m 64 \

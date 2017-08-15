@@ -160,6 +160,8 @@ pub const POSIX_FADV_WILLNEED: ::c_int = 3;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
+pub const POLLINIGNEOF: ::c_short = 0x2000;
+
 pub const EVFILT_READ: ::int16_t = -1;
 pub const EVFILT_WRITE: ::int16_t = -2;
 pub const EVFILT_AIO: ::int16_t = -3;
@@ -517,6 +519,14 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x800;
 
+pub const TABDLY: ::tcflag_t = 0x00000004;
+pub const TAB0: ::tcflag_t = 0x00000000;
+pub const TAB3: ::tcflag_t = 0x00000004;
+
+pub const _PC_ACL_NFS4: ::c_int = 64;
+
+pub const _SC_CPUSET_SIZE: ::c_int = 122;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -568,6 +578,7 @@ extern {
         msgtyp: ::c_long, msgflg: ::c_int) -> ::c_int;
     pub fn msgsnd(msqid: ::c_int, msgp: *const ::c_void, msgsz: ::size_t,
         msgflg: ::c_int) -> ::c_int;
+    pub fn cfmakesane(termios: *mut ::termios);
 }
 
 cfg_if! {

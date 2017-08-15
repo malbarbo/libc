@@ -409,12 +409,18 @@ pub const MADV_RANDOM: ::c_int = 1;
 pub const MADV_SEQUENTIAL: ::c_int = 2;
 pub const MADV_WILLNEED: ::c_int = 3;
 pub const MADV_DONTNEED: ::c_int = 4;
+pub const MADV_FREE: ::c_int = 8;
 pub const MADV_REMOVE: ::c_int = 9;
 pub const MADV_DONTFORK: ::c_int = 10;
 pub const MADV_DOFORK: ::c_int = 11;
 pub const MADV_MERGEABLE: ::c_int = 12;
 pub const MADV_UNMERGEABLE: ::c_int = 13;
+pub const MADV_HUGEPAGE: ::c_int = 14;
+pub const MADV_NOHUGEPAGE: ::c_int = 15;
+pub const MADV_DONTDUMP: ::c_int = 16;
+pub const MADV_DODUMP: ::c_int = 17;
 pub const MADV_HWPOISON: ::c_int = 100;
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 
 pub const IFF_UP: ::c_int = 0x1;
 pub const IFF_BROADCAST: ::c_int = 0x2;
@@ -435,6 +441,7 @@ pub const IFF_DYNAMIC: ::c_int = 0x8000;
 
 pub const SOL_IP: ::c_int = 0;
 pub const SOL_TCP: ::c_int = 6;
+pub const SOL_UDP: ::c_int = 17;
 pub const SOL_IPV6: ::c_int = 41;
 pub const SOL_ICMPV6: ::c_int = 58;
 pub const SOL_RAW: ::c_int = 255;
@@ -551,12 +558,11 @@ pub const MSG_WAITFORONE: ::c_int = 0x10000;
 pub const MSG_FASTOPEN: ::c_int = 0x20000000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
+pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
+
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
+pub const SOCK_RDM: ::c_int = 4;
+pub const IP_MULTICAST_IF: ::c_int = 32;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TTL: ::c_int = 2;
@@ -585,6 +591,7 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_V6ONLY: ::c_int = 26;
 
 pub const SO_DEBUG: ::c_int = 1;
+pub const SO_ORIGINAL_DST: ::c_int = 80;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -676,8 +683,14 @@ pub const IMAXBEL: ::tcflag_t = 0x00002000;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const OPOST: ::tcflag_t = 0x1;
 pub const CS5: ::tcflag_t = 0x00000000;
+pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;
 pub const ECHO: ::tcflag_t = 0x00000008;
+pub const OCRNL:  ::tcflag_t = 0o000010;
+pub const ONOCR:  ::tcflag_t = 0o000020;
+pub const ONLRET: ::tcflag_t = 0o000040;
+pub const OFILL:  ::tcflag_t = 0o000100;
+pub const OFDEL:  ::tcflag_t = 0o000200;
 
 pub const CLONE_VM: ::c_int = 0x100;
 pub const CLONE_FS: ::c_int = 0x200;
@@ -701,6 +714,7 @@ pub const CLONE_NEWUSER: ::c_int = 0x10000000;
 pub const CLONE_NEWPID: ::c_int = 0x20000000;
 pub const CLONE_NEWNET: ::c_int = 0x40000000;
 pub const CLONE_IO: ::c_int = 0x80000000;
+pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 pub const WUNTRACED: ::c_int = 0x00000002;
@@ -708,6 +722,30 @@ pub const WSTOPPED: ::c_int = WUNTRACED;
 pub const WEXITED: ::c_int = 0x00000004;
 pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
+
+// Options set using PTRACE_SETOPTIONS.
+pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
+pub const PTRACE_O_TRACEFORK: ::c_int = 0x00000002;
+pub const PTRACE_O_TRACEVFORK: ::c_int = 0x00000004;
+pub const PTRACE_O_TRACECLONE: ::c_int = 0x00000008;
+pub const PTRACE_O_TRACEEXEC: ::c_int = 0x00000010;
+pub const PTRACE_O_TRACEVFORKDONE: ::c_int = 0x00000020;
+pub const PTRACE_O_TRACEEXIT: ::c_int = 0x00000040;
+pub const PTRACE_O_TRACESECCOMP: ::c_int = 0x00000080;
+pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
+pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
+pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
+
+// Wait extended result codes for the above trace options.
+pub const PTRACE_EVENT_FORK: ::c_int = 1;
+pub const PTRACE_EVENT_VFORK: ::c_int = 2;
+pub const PTRACE_EVENT_CLONE: ::c_int = 3;
+pub const PTRACE_EVENT_EXEC: ::c_int = 4;
+pub const PTRACE_EVENT_VFORK_DONE: ::c_int = 5;
+pub const PTRACE_EVENT_EXIT: ::c_int = 6;
+pub const PTRACE_EVENT_SECCOMP: ::c_int = 7;
+// PTRACE_EVENT_STOP was added to glibc in 2.26
+// pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
 pub const __WNOTHREAD: ::c_int = 0x20000000;
 pub const __WALL: ::c_int = 0x40000000;
@@ -751,6 +789,9 @@ pub const P_PGID: idtype_t = 2;
 
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
+
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLRDBAND: ::c_short = 0x080;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -813,16 +854,6 @@ f! {
 }
 
 extern {
-    pub fn getpwnam_r(name: *const ::c_char,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
@@ -847,6 +878,10 @@ extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
+    pub fn getgrouplist(user: *const ::c_char,
+                        group: ::gid_t,
+                        groups: *mut ::gid_t,
+                        ngroups: *mut ::c_int) -> ::c_int;
     pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;
     pub fn sched_setscheduler(pid: ::pid_t,
                               policy: ::c_int,
@@ -985,6 +1020,10 @@ extern {
                                         pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
     pub fn ptsname_r(fd: ::c_int,
                      buf: *mut ::c_char,
                      buflen: ::size_t) -> ::c_int;
@@ -1005,8 +1044,22 @@ extern {
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
     pub fn vfork() -> ::pid_t;
+    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
+    pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn wait4(pid: ::pid_t, status: *mut ::c_int, options: ::c_int,
                  rusage: *mut ::rusage) -> ::pid_t;
+    pub fn openpty(amaster: *mut ::c_int,
+                aslave: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize) -> ::pid_t;
+    pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {

@@ -141,7 +141,6 @@ pub const PTRACE_SETFPREGS: ::c_int = 15;
 pub const PTRACE_GETREGS: ::c_int = 12;
 pub const PTRACE_SETREGS: ::c_int = 13;
 
-pub const SYS_gettid: ::c_long = 224;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     value: 0,
 };
@@ -165,6 +164,9 @@ pub const __CPU_BITS: ::size_t = 32;
 pub const UT_LINESIZE: usize = 8;
 pub const UT_NAMESIZE: usize = 8;
 pub const UT_HOSTSIZE: usize = 16;
+
+pub const SIGSTKSZ: ::size_t = 8192;
+pub const MINSIGSTKSZ: ::size_t = 2048;
 
 extern {
     pub fn bind(socket: ::c_int, address: *const ::sockaddr,
